@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
     token_id  SERIAL PRIMARY KEY,
     scopes jsonb,
     email varchar(255) NOT NULL UNIQUE,

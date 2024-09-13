@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id  SERIAL PRIMARY KEY,
     bbb_id varchar(255),
     email varchar(255) NOT NULL UNIQUE,

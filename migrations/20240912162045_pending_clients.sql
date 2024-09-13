@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE pending_clients (
+CREATE TABLE IF NOT EXISTS pending_clients (
     pending_clients_id  SERIAL PRIMARY KEY,
     domain varchar(511) NOT NULL UNIQUE,
     email varchar(255) NOT NULL UNIQUE,

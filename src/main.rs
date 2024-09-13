@@ -9,15 +9,21 @@ use anyhow::Context;
 async fn main() {
     // initialize tracing
     tracing_subscriber::fmt::init();
-    let env = std::fs::read_to_string(".env").unwrap();
-    let (key, database_url) = env.split_once('=').unwrap();
-
-    let pool = PgPoolOptions::new()
-    .max_connections(50)
-    .connect(&database_url)
-    .await
-    .context("could not connect to database_url")
-    .unwrap();
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let pool = match PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&database_url)
+        .await
+    {
+        Ok(pool) => {
+            println!("✅Connection to the database is successful!");
+            pool
+        }
+        Err(err) => {
+            println!("🔥 Failed to connect to the database: {:?}", err);
+            std::process::exit(1);
+        }
+    };
 
     // build our application with a route
     let app = init_router()
@@ -27,6 +33,6 @@ async fn main() {
         // .route("/users", post(create_user));
 
     // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
